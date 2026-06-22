@@ -21,7 +21,7 @@ export async function createDocument() {
     },
     body: JSON.stringify({
       title: "Untitled document",
-      content: "Start writing your document here..."
+      content: "<p>Start writing your document here...</p>"
     })
   });
 

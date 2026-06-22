@@ -1,22 +1,23 @@
+import type { Editor } from "@tiptap/react";
+import { EditorContent } from "@tiptap/react";
 import type { DocumentRecord } from "../../api/documents";
 
 type DocumentCanvasProps = {
   document: DocumentRecord | null;
+  editor: Editor | null;
   title: string;
-  content: string;
   isLoading: boolean;
   error: string | null;
   onTitleChange: (value: string) => void;
-  onContentChange: (value: string) => void;
 };
+
 export function DocumentCanvas({
   document,
+  editor,
   title,
-  content,
   isLoading,
   error,
-  onTitleChange,
-  onContentChange
+  onTitleChange
 }: DocumentCanvasProps) {
   if (isLoading) {
     return (
@@ -58,12 +59,7 @@ export function DocumentCanvas({
           placeholder="Untitled document"
         />
 
-        <textarea
-          className="document-content-input"
-          value={content}
-          onChange={(event) => onContentChange(event.target.value)}
-          placeholder="Start writing..."
-        />
+        <EditorContent editor={editor} />
       </section>
     </main>
   );

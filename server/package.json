@@ -13,8 +13,10 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@hocuspocus/server": "^4.3.0",
     "@prisma/adapter-pg": "^7.8.0",
     "cors": "^2.8.6",
+    "crossws": "^0.4.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
     "pg": "^8.22.0",

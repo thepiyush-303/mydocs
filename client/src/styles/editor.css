@@ -100,3 +100,58 @@ body {
   line-height: 1.7;
   font-family: Arial, sans-serif;
 }
+.rich-text-toolbar {
+  height: 44px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 24px;
+  position: sticky;
+  top: 72px;
+  z-index: 9;
+}
+
+.rich-text-toolbar button {
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rich-text-toolbar button:hover {
+  background: #f1f3f4;
+}
+
+.rich-text-toolbar button.active {
+  background: #e8f0fe;
+  border-color: #c7d2fe;
+}
+
+.tiptap-editor {
+  min-height: 850px;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.tiptap-editor p {
+  margin: 0 0 12px;
+}
+
+.tiptap-editor h1 {
+  font-size: 32px;
+  margin: 0 0 20px;
+}
+
+.tiptap-editor h2 {
+  font-size: 24px;
+  margin: 0 0 16px;
+}
+
+.tiptap-editor ul,
+.tiptap-editor ol {
+  padding-left: 24px;
+}
