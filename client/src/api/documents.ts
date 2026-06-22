@@ -43,3 +43,13 @@ export async function getDocument(documentId: string) {
   const result = (await response.json()) as ApiResponse<DocumentRecord>;
   return result.data;
 }
+export async function getDocuments() {
+  const response = await fetch(`${API_BASE_URL}/api/documents`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch documents");
+  }
+
+  const result = (await response.json()) as ApiResponse<DocumentRecord[]>;
+  return result.data;
+}

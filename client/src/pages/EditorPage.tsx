@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { createDocument, type DocumentRecord } from "../api/documents";
+import {
+  createDocument,
+  getDocuments,
+  type DocumentRecord
+} from "../api/documents";
 import { Toolbar } from "../components/editor/Toolbar";
 import { DocumentCanvas } from "../components/editor/DocumentCanvas";
 import "../styles/editor.css";
@@ -12,6 +16,13 @@ export function EditorPage() {
   useEffect(() => {
     async function loadDocument() {
       try {
+        const documents = await getDocuments();
+
+        if (documents.length > 0) {
+          setDocument(documents[0]);
+          return;
+        }
+
         const createdDocument = await createDocument();
         setDocument(createdDocument);
       } catch {
