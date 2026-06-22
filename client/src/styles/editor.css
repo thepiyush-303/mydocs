@@ -76,3 +76,27 @@ body {
 .document-page h1 {
   margin-top: 0;
 }
+.save-status {
+  font-size: 13px;
+  color: #5f6368;
+}
+
+.document-title-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.document-content-input {
+  width: 100%;
+  min-height: 850px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 16px;
+  line-height: 1.7;
+  font-family: Arial, sans-serif;
+}

@@ -53,3 +53,22 @@ export async function getDocuments() {
   const result = (await response.json()) as ApiResponse<DocumentRecord[]>;
   return result.data;
 }
+export async function updateDocument(
+  documentId: string,
+  input: Partial<Pick<DocumentRecord, "title" | "content">>
+) {
+  const response = await fetch(`${API_BASE_URL}/api/documents/${documentId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(input)
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update document");
+  }
+
+  const result = (await response.json()) as ApiResponse<DocumentRecord>;
+  return result.data;
+}
