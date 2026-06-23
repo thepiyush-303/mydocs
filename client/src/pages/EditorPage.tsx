@@ -1,119 +1,105 @@
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import {
-  createDocument,
-  getDocuments,
-  updateDocument,
-  type DocumentRecord
-} from "../api/documents";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCaret from "@tiptap/extension-collaboration-caret";
+import * as Y from "yjs";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 import { Toolbar } from "../components/editor/Toolbar";
 import { DocumentCanvas } from "../components/editor/DocumentCanvas";
 import { RichTextToolbar } from "../components/editor/RichTextToolbar";
-import { useDebounce } from "../hooks/useDebounce";
 import "../styles/editor.css";
 
+const COLLAB_URL = import.meta.env.VITE_COLLAB_URL;
+
+type ConnectionStatus = "connecting" | "connected" | "disconnected";
+
 export function EditorPage() {
-  const [document, setDocument] = useState<DocumentRecord | null>(null);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [connectionStatus, setConnectionStatus] =
+    useState<ConnectionStatus>("connecting");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [saveStatus, setSaveStatus] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
-  const [error, setError] = useState<string | null>(null);
+  const ydoc = useMemo(() => {
+    return new Y.Doc();
+  }, []);
 
-  const hasLoadedDocument = useRef(false);
+  const provider = useMemo(() => {
+    console.log("Connecting to:", COLLAB_URL);
 
-  const debouncedTitle = useDebounce(title, 800);
-  const debouncedContent = useDebounce(content, 800);
+    return new HocuspocusProvider({
+      url: COLLAB_URL,
+      name: "main-document",
+      document: ydoc,
+
+      onStatus({ status }) {
+        console.log("Collaboration status:", status);
+
+        if (status === "connected") {
+          setConnectionStatus("connected");
+          return;
+        }
+
+        if (status === "disconnected") {
+          setConnectionStatus("disconnected");
+          return;
+        }
+
+        setConnectionStatus("connecting");
+      },
+
+      onConnect() {
+        console.log("Connected to collaboration server");
+      },
+
+      onDisconnect() {
+        console.log("Disconnected from collaboration server");
+      },
+
+      onAuthenticationFailed({ reason }) {
+        console.error("Collaboration authentication failed:", reason);
+        setConnectionStatus("disconnected");
+      }
+    });
+  }, [ydoc]);
 
   const editor = useEditor({
-    extensions: [StarterKit],
-    content: "",
+    extensions: [
+      StarterKit.configure({
+        undoRedo: false
+      }),
+
+      Collaboration.configure({
+        document: ydoc
+      }),
+
+      CollaborationCaret.configure({
+        provider,
+        user: {
+          name: "Anonymous User",
+          color: "#2563eb"
+        }
+      })
+    ],
+
     editorProps: {
       attributes: {
         class: "tiptap-editor"
       }
-    },
-    onUpdate({ editor }) {
-      setContent(editor.getHTML());
     }
   });
 
-  useEffect(() => {
-    async function loadDocument() {
-      try {
-        const documents = await getDocuments();
-
-        const selectedDocument =
-          documents.length > 0 ? documents[0] : await createDocument();
-
-        setDocument(selectedDocument);
-        setTitle(selectedDocument.title);
-        setContent(selectedDocument.content);
-
-        editor?.commands.setContent(
-          selectedDocument.content || "<p>Start writing...</p>"
-        );
-
-        hasLoadedDocument.current = true;
-      } catch {
-        setError("Could not load document");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    if (editor) {
-      loadDocument();
-    }
-  }, [editor]);
-
-  useEffect(() => {
-    async function saveDocument() {
-      if (!document || !hasLoadedDocument.current) {
-        return;
-      }
-
-      if (
-        debouncedTitle === document.title &&
-        debouncedContent === document.content
-      ) {
-        return;
-      }
-
-      try {
-        setSaveStatus("saving");
-
-        const updatedDocument = await updateDocument(document.id, {
-          title: debouncedTitle || "Untitled document",
-          content: debouncedContent
-        });
-
-        setDocument(updatedDocument);
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("error");
-      }
-    }
-
-    saveDocument();
-  }, [debouncedTitle, debouncedContent, document]);
-
   return (
     <div className="editor-page">
-      <Toolbar saveStatus={saveStatus} />
+      <Toolbar
+        saveStatus={connectionStatus === "connected" ? "saved" : "error"}
+        connectionStatus={connectionStatus}
+      />
+
       <RichTextToolbar editor={editor} />
 
       <DocumentCanvas
-        document={document}
         editor={editor}
-        title={title}
-        isLoading={isLoading}
-        error={error}
-        onTitleChange={setTitle}
+        isLoading={false}
+        error={null}
       />
     </div>
   );
