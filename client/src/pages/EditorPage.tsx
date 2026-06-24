@@ -69,7 +69,9 @@ export function EditorPage() {
         undoRedo: false
       }),
 
+      //This adds collaboration support to TipTap.
       Collaboration.configure({
+        //This adds collaboration support to TipTap.
         document: ydoc
       }),
 

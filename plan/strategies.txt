@@ -1,0 +1,10 @@
+1. Backend creates normal HTTP server using createServer(app).
+2. Browser tries to connect using ws://localhost:5000.
+3. server.on("upgrade") catches this WebSocket upgrade request.
+4. crossws accepts the WebSocket connection.
+5. In open(peer), we pass peer.websocket to hocuspocus.handleConnection().
+6. Hocuspocus now manages this connected user inside a document room.
+7. Frontend creates a Y.Doc, which is the shared collaborative document memory.
+8. HocuspocusProvider connects frontend Y.Doc to backend using WebSocket.
+9. TipTap editor is created using useEditor().
+10. TipTap Collaboration extension is attached to the same Y.Doc, so typing updates Yjs and gets synced live.
