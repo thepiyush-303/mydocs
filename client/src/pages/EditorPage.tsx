@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+//This connects TipTap editor to Yjs.
 import Collaboration from "@tiptap/extension-collaboration";
+
 import CollaborationCaret from "@tiptap/extension-collaboration-caret";
 import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
