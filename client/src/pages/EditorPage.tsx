@@ -76,9 +76,11 @@ export function EditorPage() {
 
       //This adds collaboration support to TipTap.
       Collaboration.configure({
-        //This adds collaboration support to TipTap.
+      //This connects tip tap to the yjs document.
         document: ydoc
       }),
+
+      // editor content will be shared in ydoc.
 
       CollaborationCaret.configure({
         provider,
