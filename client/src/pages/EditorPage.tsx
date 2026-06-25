@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 //This connects TipTap editor to Yjs.
@@ -11,6 +11,7 @@ import { Toolbar } from "../components/editor/Toolbar";
 import { DocumentCanvas } from "../components/editor/DocumentCanvas";
 import { RichTextToolbar } from "../components/editor/RichTextToolbar";
 import "../styles/editor.css";
+import { createDocument, DocumentRecord, getDocument, getDocuments } from "../api/documents";
 
 const COLLAB_URL = import.meta.env.VITE_COLLAB_URL;
 
@@ -19,6 +20,10 @@ type ConnectionStatus = "connecting" | "connected" | "disconnected";
 export function EditorPage() {
   const [connectionStatus, setConnectionStatus] =
     useState<ConnectionStatus>("connecting");
+
+  const [document, setDocument] = useState<DocumentRecord | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const ydoc = useMemo(() => {
     return new Y.Doc();
@@ -90,6 +95,32 @@ export function EditorPage() {
       }
     }
   });
+
+  // useEffect(()=>{
+
+  //   async function loadDocument() {
+
+  //     try{
+
+  //       const documents = await getDocuments();
+
+  //       if (documents.length > 0) {
+  //         setDocument(documents[0]);
+  //         return;
+  //       }
+
+  //       const createdDocument = await createDocument();
+  //       setDocument(createdDocument);
+  //     }
+  //     catch {
+  //       setError("Could not load document");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   }
+  //   loadDocument()
+
+  // },[]);
 
   return (
     <div className="editor-page">

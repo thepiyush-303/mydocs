@@ -8,3 +8,23 @@
 8. HocuspocusProvider connects frontend Y.Doc to backend using WebSocket.
 9. TipTap editor is created using useEditor().
 10. TipTap Collaboration extension is attached to the same Y.Doc, so typing updates Yjs and gets synced live.
+
+
+
+Hocuspocus persistence works by loading document state when a room opens and storing document state after changes. The official docs say you can use onLoadDocument/onStoreDocument, or the easier generic Database extension. The Database extension expects fetch() to return a Yjs-compatible Uint8Array | null, and store() to persist Yjs binary data.
+
+EditorPage.tsx gives room name "main-document"
+↓
+Hocuspocus connects user to that room
+↓
+Database.fetch() loads old Yjs state
+↓
+User edits document
+↓
+Hocuspocus detects Yjs change
+↓
+Database.store() receives latest state
+↓
+store() calls upsertState()
+↓
+Prisma upsert saves it in PostgreSQL

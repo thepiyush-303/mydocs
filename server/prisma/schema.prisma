@@ -20,3 +20,11 @@ model Document {
 
   @@map("documents")
 }
+model YjsDocument {
+  name      String   @id
+  state     Bytes    @db.ByteA
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("yjs_documents")
+}
